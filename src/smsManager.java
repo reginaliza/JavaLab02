@@ -1,30 +1,43 @@
-/*
--Insert SMS
--Retrieve SMS given a start date and end date
--Retrieve SMS given a promo code
--Retrieve SMS given an msisdn
--Retrieve SMS sent by the system
--Retrieve SMS receive by the system
--Retrieve SMS given several msisdn
-
- */
-
 import java.time.LocalDateTime;
 
-public interface smsManager {
+public class smsManager implements smsManagerInterface {
+    private sms sms;
+    private database con;
 
-    public boolean insertSMS();
+    @Override
+    public boolean insertSms() {
 
-    public String retrieveByDate(LocalDateTime dateTime);
+        return false;
+    }
 
-    public String retrieveByPromoCode();
+    @Override
+    public String retrieveSmsByDate(LocalDateTime dateTime) {
+        return null;
+    }
 
-    public String retrieveBymsisdn(String msisdn);
+    @Override
+    public String retrieveSmsByPromoCode() {
 
-    public String retrieveBySystemSent();
+        return null;
+    }
 
-    public String retrieveBySystemRecieve();
+    @Override
+    public String retrieveSmsByMsisdn(String msisdn) {
+        return null;
+    }
 
-    public String retriveByManymsisdn(String[] msisdn);
+    @Override
+    public String retrieveSmsByMsisdn(String[] msisdn) {
+        return null;
+    }
 
+    @Override
+    public String retrieveSmsBySent() {
+        return null;
+    }
+
+    @Override
+    public String retrieveSmsByReceive() {
+        return null;
+    }
 }
