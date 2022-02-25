@@ -3,11 +3,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SMSLogs {
-
     final private static Logger logger = Logger.getLogger(SMSLogs.class.getName());
 
     public void showResult(String message){
-        logger.info("LOG: " + message);
+        //logger.info("LOG: " + message);
     }
 
     public void showResult(String message, Logger logger){

@@ -1,3 +1,12 @@
+/*
+Create a class Promo with the following fields.
+Promo Code
+Details
+Short Code
+Start Date
+End Date
+ */
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
@@ -69,12 +78,12 @@ public class Promo {
 
     @Override
     public String toString() {
-        return "Promo" +
-                "\npromoCode='" + promoCode + '\'' +
-                "\n details='" + details + '\'' +
-                "\n shortCode='" + shortCode + '\'' +
-                "\n startDate=" + startDate +
-                "\n endDate=" + endDate +
-                '}';
+        return
+                "\n promoCode: " + promoCode +
+                "\n details: " + details +
+                "\n shortCode: " + shortCode +
+                "\n startDate: " + startDate +
+                "\n endDate: " + endDate +
+                "\n ==================== ";
     }
 }

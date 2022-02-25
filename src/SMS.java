@@ -1,3 +1,14 @@
+/*
+Create a class sms with the following fields.
+MSISDN
+RECIPIENT
+SENDER
+SHORT CODE
+TRANSACTION ID (contains number and characters)
+TIMESTAMP
+Note: TRANSACTION ID is auto generate by another system and is not generated.
+ */
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -117,8 +128,12 @@ public class SMS {
         this.voucherCode = voucherCode;
     }
 
-    // MAP
-    //creates a Map with msisdn, message, and shortcode as its items
+    /*
+    Create a function that will accept a map with exactly 3 items.
+    The first item is the mobile number.
+    The second item is the sms
+    The third is the short code that will send the sms
+     */
     public Map<String, String> getSmsMap() {
         Map<String, String> smsMap = new HashMap<>();
         smsMap.put("msisdn", this.getMsisdn());
@@ -127,17 +142,18 @@ public class SMS {
         return smsMap;
     }
 
+    /*
+    This will check the sms sent and tag the sms for which promo the sms is for.
+    It will tag if the sms is SUCCESS SMS or FAILED SMS based on the promo rules.
+     */
     public void checkSMS(Map<String, String> smsMap){
         this.voucherCode = getVoucherCode(smsMap.get("message"), smsMap.get("shortCode"));
 
-        //if the SMS passes all of these conditions, the SMS is tagged as SUCCESS
         if (checkMsisdn(smsMap.get("msisdn"))
                 && checkMessage(smsMap.get("message"), this.voucherCode)
                 && checkDate(this.timestamp, this.voucherCode)){
             this.status = Status.SUCCESS_SMS;
 
-            //if the SMS failed at least of the conditions above, the SMS is tagged
-            //as FAILED
         } else {
             this.status = Status.FAILED_SMS;
         }
@@ -177,16 +193,16 @@ public class SMS {
 
     @Override
     public String toString() {
-        return "SMS{" +
-                "\nmsisdn='" + msisdn + '\'' +
-                "\n recipient='" + recipient + '\'' +
-                "\n sender='" + sender + '\'' +
-                "\n shortCode='" + shortCode + '\'' +
-                "\n transactionID='" + transactionID + '\'' +
-                "\n register='" + register + '\'' +
-                "\n timestamp=" + timestamp +
-                "\n status='" + status + '\'' +
-                "\n voucherCode='" + voucherCode.getPromoCode() + '\'' +
-                '}';
+        return
+                "\n msisdn: " + msisdn +
+                "\n recipient: " + recipient +
+                "\n sender: " + sender +
+                "\n shortCode: " + shortCode +
+                "\n transactionID: " + transactionID +
+                "\n register: " + register +
+                "\n timestamp: " + timestamp +
+                "\n status: " + status +
+                "\n voucherCode: " + voucherCode.getPromoCode() +
+                " \n==================== ";
     }
 }
