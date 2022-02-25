@@ -1,27 +1,23 @@
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        createPromos();
-        scenarios();
+        //createPromos();
+        //scenarios();
 
         DatabaseConnect.connect();
         DatabaseConnect.retrieveData();
+        //DatabaseConnect.generateReport();
+        //DatabaseConnect.totalReceived();
+        //DatabaseConnect.totalSent();
     }
 
     private static void scenarios() {
-        //DATA POPULATION -----------------------
-
         // INPUT 1: PromoCode: PROMO; Should be SUCCESS_SMS
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09202819125",
                         "System",
                         "Regina Diloy",
@@ -39,7 +35,7 @@ public class Main {
 
         //Users send “REGISTER” to the shortcode to be able to avail of the promo.
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09202819125",
                         "System",
                         "Regina Diloy",
@@ -56,7 +52,7 @@ public class Main {
                 );
 // The system will reply To complete the promo registration, please send Lastname, Firstname to shortCode
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09202819125",
                         "System",
                         "Regina Diloy",
@@ -75,7 +71,7 @@ public class Main {
 
         // INPUT 2: PromoCode: FREESF; Should be SUCCESS_SMS
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09171234567",
                         "System",
                         "Regina Diloy",
@@ -93,7 +89,7 @@ public class Main {
 
         //Users send “REGISTER” to the shortcode to be able to avail of the promo.
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09171234567",
                         "System",
                         "Regina Diloy",
@@ -110,7 +106,7 @@ public class Main {
                 );
 // The system will reply To complete the promo registration, please send Lastname, Firstname to shortCode
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09171234567",
                         "System",
                         "Regina Diloy",
@@ -128,7 +124,7 @@ public class Main {
 
         // INPUT 3: PromoCode: B1T1; Should be SUCCESS_SMS
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09459876543",
                         "System",
                         "Regina Diloy",
@@ -146,7 +142,7 @@ public class Main {
 
         //Users send “REGISTER” to the shortcode to be able to avail of the promo.
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09459876543",
                         "System",
                         "Regina Diloy",
@@ -164,7 +160,7 @@ public class Main {
 
 // The system will reply To complete the promo registration, please send Lastname, Firstname to shortCode
         SMSSender.getInstance()
-                .sendSMS(new SMS(
+                .sendRegister(new SMS(
                         "09171234567",
                         "System",
                         "Regina Diloy",

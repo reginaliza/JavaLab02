@@ -40,7 +40,7 @@ public class DatabaseConnect implements SMSManager {
                     properties.getProperty("db.url"),
                     properties.getProperty("db.user"),
                     properties.getProperty("db.password"));
-            logger.info("CONNECTED TO DATABASE");
+            logger.log(Level.INFO,"CONNECTED TO DATABASE");
 
         } catch (Exception e){
             logger.log(Level.SEVERE, "CONNECTION FAILED: ", e);
@@ -145,134 +145,15 @@ public class DatabaseConnect implements SMSManager {
         logger.log(Level.INFO, "Added to Database " + sms.toString());
         //disconnect();
     }
+// ===================================
+    // ================== DO NOT MODIFY ABOVE CODE, ALREADY WORKING ===============
+//====================================
 
-    // ================== DO NOT MODIFY ABOVE CODE ==========
-
-
-    //retrieves SMS list given start date and end date
-    @Override
-    public ArrayList<SMS> retrieveSMSByDate(String startDate, String endDate) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        query = "SELECT * FROM sms_db.tbl_sms " +
-                "WHERE timestamp BETWEEN '" + startDate +
-                "' AND '" + endDate + "' ";
-
-        return retrieveSMSData(smsList, query);
-    }
-
-    //retrieves SMS list given a msisdn
-    @Override
-    public ArrayList<SMS> retrieveSMSByMsisdn(String msisdn) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        query = "SELECT * FROM sms_db.tbl_sms " +
-                "WHERE msisdn = '" + msisdn + "' ";
-
-        return retrieveSMSData(smsList, query);
-    }
-
-    //retrieves SMS list given multiple msisdn
-    @Override
-    public ArrayList<SMS> retrieveSMSByMsisdnList(String[] msisdnList) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        for (String msisdn : msisdnList){
-            query = "SELECT * FROM sms_db.tbl_sms " +
-                    "WHERE msisdn = '" + msisdn + "' ";
-
-            try {
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery(query);
-
-                while (resultSet.next()){
-                    sms = new SMS(
-                            resultSet.getString("msisdn"),
-                            resultSet.getString("recipient"),
-                            resultSet.getString("sender"),
-                            resultSet.getString("shortCode"),
-                            resultSet.getString("transactionID"),
-                            resultSet.getString("register"),
-                            LocalDateTime.parse(
-                                    resultSet.getString("timestamp"),
-                                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                            Status.valueOf(resultSet.getString("status")),
-                            Voucher.valueOf(resultSet.getString("promo"))
-                    );
-                    smsList.add(sms);
-
-                    logger.log(Level.INFO, sms.toString());
-                }
-
-            } catch (SQLException e) {
-                logger.log(Level.SEVERE, "SQLException: ", e);
-
-            } finally {
-                try {
-                    if (statement != null){
-                        statement.close();
-                    }
-                    if (resultSet != null){
-                        resultSet.close();
-                    }
-                } catch (Exception e){
-                    logger.log(Level.SEVERE, "ERROR IN CLOSING: ", e);
-                }
-            }
-            logger.log(Level.INFO, "Retrieved : {0}", smsList);
-
-        }
-
-        disconnect();
-        return smsList;
-    }
-
-    //retrieves SMS list given a promo code
-    @Override
-    public ArrayList<SMS> retrieveSMSbyPromoCode(String promoCode) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        query = "SELECT * FROM java_diloy_db.sms_db AS s " +
-                "INNER JOIN java_diloy_db.promo_db AS p " +
-                "ON s.shortCode = p.shortCode " +
-                "WHERE p.promoCode = '" + promoCode + "' ";
-
-        return retrieveSMSData(smsList, query);
-    }
-
-    //retrieves SMS list sent by the system
-    @Override
-    public ArrayList<SMS> retrieveSMSfromSystem(String sender) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        query = "SELECT * FROM java_diloy_db.sms_db " +
-                "WHERE sender = '" + sender + "' ";
-
-        return retrieveSMSData(smsList, query);
-    }
-
-    //retrieves SMS list received by the system
-    @Override
-    public ArrayList<SMS> retrieveSMSToSystem(String recipient) {
-        ArrayList<SMS> smsList = new ArrayList<>();
-
-        query = "SELECT * FROM java_diloy_db.sms_db " +
-                "WHERE recipient = '" + recipient + "' ";
-
-        return retrieveSMSData(smsList, query);
-    }
-
-
-
-    //improvised function that updates the transaction ID of the
-    // recent added SMS because varchar fields cannot be autogenerated
     public void generateTransactionID(Map<String, Object> transactionId){
         Integer id = (Integer) transactionId.get("id");
         String promo = (String) transactionId.get("promo");
-
-        //transaction ID = promo + autogenerated id
         query = "UPDATE java_diloy_db.sms_db " +
-                "SET transactionID = '" + promo + id + "' " +
+                "SET transactionID = '" + id + "-" + promo + "' " +
                 "WHERE id = " + id;
 
         try {
@@ -296,8 +177,6 @@ public class DatabaseConnect implements SMSManager {
         disconnect();
     }
 
-    //gets the id and promo of the recent added SMS
-    //used for supplying the parameters required by the updateTransactionID
     public Map<String, Object> getIdPromo() {
         query = "SELECT s.id, s.promo " +
                 "FROM java_diloy_db.sms_db AS s " +
@@ -331,56 +210,26 @@ public class DatabaseConnect implements SMSManager {
         return idPromo;
     }
 
-    //main shared function for retrieving SMS transactions
-    private ArrayList<SMS> retrieveSMSData(ArrayList<SMS> smsList, String query) {
-        try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
-
-            while (resultSet.next()){
-                sms = new SMS(
-                        resultSet.getString("msisdn"),
-                        resultSet.getString("recipient"),
-                        resultSet.getString("sender"),
-                        resultSet.getString("shortCode"),
-                        resultSet.getString("transactionID"),
-                        resultSet.getString("register"),
-                        LocalDateTime.parse(
-                                resultSet.getString("timestamp"),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                        Status.valueOf(resultSet.getString("status")),
-                        Voucher.valueOf(resultSet.getString("promo"))
-                );
-                smsList.add(sms);
-
-                logger.log(Level.INFO, sms.toString());
-            }
-
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "SQLException: ", e);
-
-        } finally {
-            try {
-                if (statement != null){
-                    statement.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-            } catch (Exception e){
-                logger.log(Level.SEVERE, "ERROR IN CLOSING: ", e);
-            }
-        }
-        logger.log(Level.INFO, "Retrieved : {0}", smsList);
-
-        disconnect();
-        return smsList;
-    }
-
-    // ==============
-
     public static ArrayList<String> retrieveData() {
-        String selectQuery = "Select * from java_diloy_db.sms_db where sender = 'Pizza Hut'";
+
+        //Retrieve SMS given a start date and end date
+        String selectQuery = "Select * from java_diloy_db.sms_db where timestamp '2021-02-01 10:00:00' and '2021-02-01 29:59:00'";
+
+        //Retrieve SMS given a promo code
+        //String selectQuery = "Select * from java_diloy_db.sms_db where promo = 'FREESF'";
+
+        //Retrieve SMS given an msisdn
+        //String selectQuery = "Select * from java_diloy_db.sms_db where msisdn = '09202819125'";
+
+        //Retrieve SMS sent by the system
+        //String selectQuery = "Select * from java_diloy_db.sms_db where sender = 'system'";
+
+        //Retrieve SMS receive by the system
+        //String selectQuery = "Select * from java_diloy_db.sms_db where sender = 'Regina Diloy'";
+
+        //Retrieve SMS given several msisdn
+        //String selectQuery = "Select * from java_diloy_db.sms_db where msisdn = '09202819125' and '09171234567'";
+
         Statement statement = null;
         ResultSet resultSet = null;
         ArrayList<String> result = new ArrayList<>();
@@ -390,7 +239,7 @@ public class DatabaseConnect implements SMSManager {
             resultSet = statement.executeQuery(selectQuery);
 
             while(resultSet.next()) {
-                logger.log(Level.INFO, "ROW: " + resultSet.getString(1)
+                logger.log(Level.INFO, "ROW IN DATABASE: " + resultSet.getString(1)
                         + "\nMobile Number: " + resultSet.getString(2)
                         + "\nRecipient: " + resultSet.getString(3)
                         + "\nSender:" + resultSet.getString(4)
@@ -421,6 +270,132 @@ public class DatabaseConnect implements SMSManager {
 
         //logger.log(Level.INFO, "Retrieved: {0}", result);
         logger.log(Level.INFO, "===== Retrieved Data =====");
+        return result;
+    }
+
+
+// FOR PISO PIZZA PROMO ONLY
+    public static ArrayList<String> generateReport() {
+
+        //List of Failed Transactions
+        String selectQuery = "Select * from java_diloy_db.sms_db where status = 'FAILED_SMS'";
+
+        //List of Successful Transactions
+        //String selectQuery = "Select * from java_diloy_db.sms_db where status = 'SUCCESS'";
+
+        //List of Persons who joined the Promo
+        //String selectQuery = "Select * from java_diloy_db.sms_db where sender = 'Regina Diloy'";
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(selectQuery);
+
+            while(resultSet.next()) {
+                logger.log(Level.INFO, "ROW IN DATABASE: " + resultSet.getString(1)
+                        + "\nMobile Number: " + resultSet.getString(2)
+                        + "\nRecipient: " + resultSet.getString(3)
+                        + "\nSender:" + resultSet.getString(4)
+                        + "\nShort Code: " + resultSet.getString(5)
+                        + "\nTime Stamp: " + resultSet.getString(6)
+                        + "\nTransaction ID: " + resultSet.getString(7)
+                        + "\nStatus: " + resultSet.getString(8)
+                        + "\nPromo Code: " + resultSet.getString(9)
+                        + "\n ==================== ");
+            }
+        }
+        catch (SQLException e) {
+            logger.log(Level.SEVERE, "SQLException", e);
+        }
+        finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (resultSet != null) {
+                    statement.close();
+                }
+            }
+            catch (Exception e) {
+                logger.log(Level.SEVERE, "ERROR IN CLOSING", e);
+            }
+        }
+
+        //logger.log(Level.INFO, "Retrieved: {0}", result);
+        logger.log(Level.INFO, "===== Retrieved Data =====");
+        return result;
+    }
+
+    //Total Count of SMS received
+    public static ArrayList<String> totalReceived() {
+        String selectQuery = "Select count(*) from java_diloy_db.sms_db where sender != 'System'";
+        Statement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(selectQuery);
+
+            while(resultSet.next()) {
+                int count = resultSet.getInt(1);
+                logger.log(Level.INFO,"Number of SMS received by system: " +count);
+            }
+        }
+        catch (SQLException e) {
+            logger.log(Level.SEVERE, "SQLException", e);
+        }
+        finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (resultSet != null) {
+                    statement.close();
+                }
+            }
+            catch (Exception e) {
+                logger.log(Level.SEVERE, "ERROR IN CLOSING", e);
+            }
+        }
+        return result;
+    }
+
+    //Total Count of SMS Sent
+    public static ArrayList<String> totalSent() {
+        String selectQuery = "Select count(*) from java_diloy_db.sms_db where sender = 'System'";
+        Statement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(selectQuery);
+
+            while(resultSet.next()) {
+                int count = resultSet.getInt(1);
+                logger.log(Level.INFO,"Number of SMS sent by system: " +count);
+            }
+        }
+        catch (SQLException e) {
+            logger.log(Level.SEVERE, "SQLException", e);
+        }
+        finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (resultSet != null) {
+                    statement.close();
+                }
+            }
+            catch (Exception e) {
+                logger.log(Level.SEVERE, "ERROR IN CLOSING", e);
+            }
+        }
         return result;
     }
 }

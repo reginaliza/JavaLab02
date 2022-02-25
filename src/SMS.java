@@ -142,10 +142,7 @@ public class SMS {
         return smsMap;
     }
 
-    /*
-    This will check the sms sent and tag the sms for which promo the sms is for.
-    It will tag if the sms is SUCCESS SMS or FAILED SMS based on the promo rules.
-     */
+
     public void checkSMS(Map<String, String> smsMap){
         this.voucherCode = getVoucherCode(smsMap.get("message"), smsMap.get("shortCode"));
 
@@ -170,14 +167,11 @@ public class SMS {
                 || message.contains(", ");
     }
 
-    //checks if the user sent date and time is within the promo period
     private boolean checkDate(LocalDateTime timestamp, Voucher voucher){
         return voucher.getStartDate().isBefore(timestamp)
                 && voucher.getEndDate().isAfter(timestamp);
     }
 
-    //determines the promo of the SMS based on the payload/message sent by the user
-    // and the shortcode
     private Voucher getVoucherCode(String message, String shortCode){
         Voucher promo = null;
 
