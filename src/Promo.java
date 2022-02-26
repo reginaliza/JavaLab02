@@ -10,6 +10,8 @@ End Date
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
+// Contains: Variables, Constructors, Getters & Setters, toString (for output)
+
 public class Promo {
 
     private String promoCode;

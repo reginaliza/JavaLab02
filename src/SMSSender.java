@@ -46,14 +46,16 @@ public class SMSSender {
         );
 
         insertSMS(replySMS);
-        displaySMS(sms);
+        //displaySMS(sms);
     }
 
-
+/*
     private void displaySMS(SMS sms){
 
         smsLogs.showResult(sms.getRegister());
     }
+
+ */
 
     public void createPromo(Promo promo){
         smsLogs.showResult(DatabaseConnect.getInstance().insertPromo(promo));

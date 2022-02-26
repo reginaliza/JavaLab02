@@ -14,6 +14,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+// Contains: Variables, Constructors for User SMS and System SMS, Getters & Setters, toString (for output)
+// Map. Scenario: msisdn should be 11
+        // user should send "PROMO"
+        // then, user should send "REGISTER" to avail the promo. This time, system will check if they received "REGISTER"
+        //System will send "To complete the promo registration, please send Lastname, Firstname to" + promoCode
+        //Finally, User will send <lastname>, <firstname>
+        //SUCCESS_SMS :)
+
 public class SMS {
     protected String msisdn;
     protected String recipient;
@@ -158,7 +166,7 @@ public class SMS {
 
     private boolean checkMsisdn(String msisdn){
         return msisdn.length() == 11;
-        // FORMAT OF MSISDN = 09XXXXXXXXX not +639
+        // FORMAT OF MSISDN = 0XXXXXXXXXX not +639
     }
 
     private boolean checkMessage(String message, Voucher voucherCode){

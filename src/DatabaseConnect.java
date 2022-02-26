@@ -40,7 +40,7 @@ public class DatabaseConnect implements SMSManager {
                     properties.getProperty("db.url"),
                     properties.getProperty("db.user"),
                     properties.getProperty("db.password"));
-            logger.log(Level.INFO,"CONNECTED TO DATABASE");
+            //logger.log(Level.INFO,"CONNECTED TO DATABASE"); // Decided to only log output when connection failed
 
         } catch (Exception e){
             logger.log(Level.SEVERE, "CONNECTION FAILED: ", e);
@@ -48,14 +48,14 @@ public class DatabaseConnect implements SMSManager {
     }
 
 
-    public void disconnect(){
+    public static void disconnect(){
         try{
             if (connection!= null){
                 connection.close();
                 logger.info("DISCONNECTED TO DATABASE");
             }
         } catch (Exception e){
-            logger.log(Level.SEVERE, "ERROR!! ", e);
+            logger.log(Level.SEVERE, "ERROR!!! ", e);
         }
     }
 
@@ -173,8 +173,8 @@ public class DatabaseConnect implements SMSManager {
             }
         }
 
-        logger.log(Level.INFO, "UPDATED DATA: TransactionID = " + promo + id);
-        disconnect();
+        //logger.log(Level.INFO, "UPDATED DATA: TransactionID = " + promo + id);
+        //disconnect();
     }
 
     public Map<String, Object> getIdPromo() {
@@ -191,7 +191,7 @@ public class DatabaseConnect implements SMSManager {
             idPromo.put("id", resultSet.getInt("id"));
             idPromo.put("promo", resultSet.getString("promo"));
 
-           logger.log(Level.INFO, "READ DATA: " + idPromo.toString());
+           //logger.log(Level.INFO, "READ DATA: " + idPromo.toString());
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "SQLException: ", e);
@@ -206,7 +206,7 @@ public class DatabaseConnect implements SMSManager {
             }
         }
 
-        disconnect();
+        //disconnect();
         return idPromo;
     }
 
@@ -284,7 +284,7 @@ public class DatabaseConnect implements SMSManager {
         //String selectQuery = "Select * from java_diloy_db.sms_db where status = 'SUCCESS'";
 
         //List of Persons who joined the Promo
-        //String selectQuery = "Select * from java_diloy_db.sms_db where sender = 'Regina Diloy'";
+        //String selectQuery = "Select * from java_diloy_db.sms_db where sender != 'System'";
 
         Statement statement = null;
         ResultSet resultSet = null;
